@@ -1,1 +1,1 @@
-export { useReceiveMessages } from './hooks/useReceiveMessages'
+export { useReceiveMessages } from './hooks/useReceiveMessages';

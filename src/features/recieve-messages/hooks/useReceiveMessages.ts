@@ -13,7 +13,7 @@ export const useReceiveMessages = () => {
     if (messages && messages.length > 0) {
       messages.forEach((m: never) => processedMessageIds.current.add(m.id));
     }
-  }, [messages?.length]);
+  }, [messages, messages.length]);
 
   useEffect(() => {
     if (!isAuth || !apiService) return;

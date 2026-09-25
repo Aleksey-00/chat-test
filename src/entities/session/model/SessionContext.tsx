@@ -21,7 +21,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Вычисляем apiService на лету с помощью useMemo, без использования useEffect и лишних setState
   const apiService = useMemo(() => {
     if (idInstance && apiTokenInstance) {
-      return new GreenApiService(idInstance, apiTokenInstance);
+      return new GreenApiService(
+        idInstance,
+        apiTokenInstance,
+        import.meta.env.VITE_API_BASE_URL || 'https://4100.api.green-api.com',
+      );
     }
     return null;
   }, [idInstance, apiTokenInstance]);
@@ -56,6 +60,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSession = () => {
   const context = useContext(SessionContext);
   if (!context) {

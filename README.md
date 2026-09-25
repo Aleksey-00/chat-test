@@ -1,75 +1,77 @@
-# React + TypeScript + Vite
+# Telegram Web Client (FSD + TypeScript)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Пользовательский интерфейс для отправки и получения текстовых сообщений в Telegram, разработанный в качестве тестового задания на позицию Front-end разработчика (React).
 
-Currently, two official plugins are available:
+Интеграция с мессенджером реализована через шлюз **Green-API** (Telegram API Instance).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Технологический стек
 
-## React Compiler
+* **React 18** (Functional Components, Hooks, Context API)
+* **TypeScript** (Строгая типизация сущностей, пропсов и API-клиента)
+* **Vite** (Сборщик проекта, Hot Module Replacement)
+* **Feature-Sliced Design (FSD)** (Архитектурная методология)
+* **Prettier** (Автоматическое форматирование кода)
+* **ESLint** (Строгий линтинг компонентов и Fast Refresh правил)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📐 Архитектура проекта
 
-## Expanding the ESLint configuration
+Код структурирован строго по методологии **Feature-Sliced Design (FSD)**:
+* `src/app/` — Инициализация приложения, глобальные стили (`index.css`), root-провайдеры сессии.
+* `src/pages/` — Компоненты страниц: `AuthPage` (вход) и `ChatPage` (рабочая область).
+* `src/widgets/` — Самостоятельные блоки интерфейса: `Sidebar` (левая панель) и `ChatWindow` (окно переписки).
+* `src/features/` — Действия пользователя: `auth-by-instance` (авторизация и авто-вход) и `receive-messages` (фоновый Long Polling).
+* `src/entities/` — Бизнес-сущности с изолированным стейтом и персистентностью в LocalStorage: `session` и `chat`.
+* `src/shared/` — Переиспользуемый код: `api` (низкоуровневый клиент для Green-API) и UI-элементы.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 💻 Пошаговая инструкция по локальному развертыванию
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+### 1. Клонирование репозитория
+Скачайте проект на локальный компьютер:
+```bash
+git clone git@github.com:Aleksey-00/chat-test.git
+cd <название_папки_проекта>
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+### 2. Установка зависимостей
+Установите все необходимые пакеты и зависимости (включая Prettier и TypeScript типы):
+```bash
+npm install
 ```
+
+### 3. Настройка переменных окружения (`.env`)
+Создайте файл **`.env`** в корневом каталоге проекта (рядом с `package.json`) и укажите учетные данные вашего инстанса Green-API.
+
+*Приложение поддерживает автоматический вход при старте, если эти переменные заполнены:*
+
+```env
+VITE_ID_INSTANCE=ваша_цифровая_строка_id (например, 410022746914)
+VITE_API_TOKEN_INSTANCE=ваш_токен_инстанса
+VITE_API_BASE_URL=https://green-api.com
+```
+> **Важно:** Убедитесь, что хост в `VITE_API_BASE_URL` в точности соответствует хосту вашего инстанса из личного кабинета Green-API.
+
+### 4. Запуск сервера разработки
+Запустите локальный сервер Vite:
+```bash
+npm run dev
+```
+После запуска приложение будет доступно в браузере по адресу: **`http://localhost:5173/`**
+
+### 5. Дополнительные команды
+* `npm run format` — Отформатировать весь исходный код проекта с помощью Prettier.
+* `npm run lint` — Запустить проверку кода линтером ESLint.
+* `npm run build` — Скомпилировать проект в production-сборку (папка `dist/`).
+
+---
+
+## 🎯 Сценарий для проверки и тестирования (Важно для проверяющего)
+
+1. **Авторизация инстанса:** Перед тестированием убедитесь, что инстанс в консоли Green-API находится в статусе `authorized` (связан с вашим реальным аккаунтом Telegram).
+2. **Создание чата:** В левой панели введите официальный **числовой ID пользователя Telegram** (например, `1598475065`), с которым вы хотите протестировать общение, и нажмите `+`.
+    * *Примечание:* Для Telegram-инстансов шлюз оперирует внутренними ID пользователей (из-за настроек приватности номеров), поэтому ввод числового ID гарантирует безошибочную синхронизацию отправки и получения в одном окне.
+    * Так же можно использовать **`+79521525577` номмера телефонов в таком формате.
+3. **Отправка сообщения:** Выберите созданный чат, введите текст сообщения и нажмите «Отправить». Сообщение отобразится в **зеленом бабле** и мгновенно улетит в реальный Telegram собеседнику.
+4. **Получение сообщения:** Попросите собеседника ответить вам в Telegram. Наш фоновый хук Long Polling перехватит входящее уведомление, отсечет дубли по `idMessage`, отфильтрует системные прокси-сообщения и автоматически отрисует ответ в виде **белого бабла** под вашим сообщением.
+5. **Сохранение истории:** Перезагрузите страницу (`F5`) — благодаря интеграции стейта с `localStorage` сессия, активный чат и вся история переписки останутся на экране.
